@@ -1,4 +1,10 @@
-const {Restaurant} = require('./Restaurant')
-const {Menu} = require('./Menu')
+const { Restaurant } = require("./Restaurant");
+const { Menu } = require("./Menu");
+const { Item } = require("./Item");
 
-module.exports = { Restaurant, Menu }
+// Associations: One-to-Many
+
+Restaurant.hasMany(Menu);
+Menu.belongsTo(Restaurant);
+
+module.exports = { Restaurant, Menu, Item };

@@ -1,6 +1,6 @@
 const { sequelize } = require("./db");
-const { Restaurant, Menu } = require("./models/index");
-const { seedRestaurant, seedMenu } = require("./seedData");
+const { Restaurant, Menu, Item } = require("./models/index");
+const { seedRestaurant, seedMenu, seedItem } = require("./seedData");
 
 describe("Restaurant and Menu Models", () => {
   /**
@@ -31,6 +31,20 @@ describe("Restaurant and Menu Models", () => {
     expect(allMenus[1]).toEqual(expect.objectContaining(seedMenu[1]));
   });
 
+  test("can create an Item", async () => {
+    await Item.bulkCreate(seedItem);
+
+    const allItems = await Item.findAll({ raw: true });
+    console.log(allItems[1]);
+    expect(allItems[1]).toEqual(
+      expect.objectContaining({
+        name: "egusi soup",
+        image: "someimage.jpg",
+        price: 10.5,
+      })
+    );
+  });
+
   test("can find Restaurants", async () => {
     // TODO - write test
     const restaurant = await Restaurant.bulkCreate(seedRestaurant);
@@ -46,11 +60,27 @@ describe("Restaurant and Menu Models", () => {
     expect(foundMenu).toEqual(expect.objectContaining(seedMenu[1]));
   });
 
+  test("can find Items", async () => {
+    // TODO - write test
+    await Item.bulkCreate(seedItem);
+    const foundItem = await Item.findByPk(3);
+    // console.log(foundItem.toJSON());
+    expect(foundItem).toEqual(expect.objectContaining(seedItem[2]));
+  });
+
   test("can delete Restaurants", async () => {
     // TODO - write test
     await Restaurant.bulkCreate(seedRestaurant);
     const foundRestaurant = await Restaurant.findByPk(1);
     await Restaurant.destroy({ where: { id: 1 } });
     expect(foundRestaurant).toEqual(expect.objectContaining(seedRestaurant[0]));
+  });
+
+  test("can delete Item", async () => {
+    // TODO - write test
+    await Item.bulkCreate(seedItem);
+    const foundItem = await Item.findByPk(1);
+    await Item.destroy({ where: { id: 1 } });
+    expect(foundItem).toEqual(expect.objectContaining(seedItem[0]));
   });
 });
