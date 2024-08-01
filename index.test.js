@@ -6,7 +6,7 @@ describe("Restaurant and Menu Models", () => {
   /**
    * Runs the code prior to all tests
    */
-  beforeAll(async () => {
+  beforeEach(async () => {
     // the 'sync' method will create tables based on the model class
     // by setting 'force:true' the tables are recreated each time the
     // test suite is run
@@ -66,6 +66,23 @@ describe("Restaurant and Menu Models", () => {
     const foundItem = await Item.findByPk(3);
     // console.log(foundItem.toJSON());
     expect(foundItem).toEqual(expect.objectContaining(seedItem[2]));
+  });
+
+  test("can update Items", async () => {
+    // TODO - write test
+    await Item.bulkCreate(seedItem);
+    await Item.update({ name: "pizza" }, { where: { name: "egusi soup" } });
+    const updatedItem = await Item.findOne({ where: { name: "pizza" } });
+    console.log(updatedItem.toJSON());
+    expect(updatedItem).toEqual(
+      expect.objectContaining({
+        id: 2,
+        name: "pizza",
+        image: "someimage.jpg",
+        price: 10.5,
+        vegetarian: false,
+      })
+    );
   });
 
   test("can delete Restaurants", async () => {
