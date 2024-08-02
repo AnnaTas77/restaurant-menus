@@ -100,4 +100,20 @@ describe("Restaurant and Menu Models", () => {
     await Item.destroy({ where: { id: 1 } });
     expect(foundItem).toEqual(expect.objectContaining(seedItem[0]));
   });
+
+  test.only("Menu and Item many-to-many association", async () => {
+    const items = await Item.bulkCreate(seedItem);
+    const menus = await Menu.bulkCreate(seedMenu);
+
+    // const allItems = await Item.findAll({ raw: true });
+    // const allMenus = await Menu.findAll({ raw: true });
+
+    const firstItem = await Item.findOne({ where: { name: "hamburger" } });
+    await firstItem.setMenus(menus);
+    const firstItemWithMenus = await Item.findByPk(3, { include: Menu });
+    console.log(
+      "firstItemWithMenus",
+      JSON.stringify(firstItemWithMenus, null, 2)
+    );
+  });
 });
